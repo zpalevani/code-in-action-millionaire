@@ -1,0 +1,21 @@
+name: Release 2 checks
+on:
+  push:
+    branches: [main, release/2.0]
+  pull_request:
+    branches: [main]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - run: node --check src/index.js
+      - run: node --check src/questions.js
+      - run: node --check public/app.js
