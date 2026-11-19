@@ -1,0 +1,25 @@
+# Release 2 candidate — deployment gate
+
+This branch is **not production-ready** and is intentionally separate from main. Do not merge or deploy until the checks below pass.
+
+## New Cloudflare resources only
+
+1. In the Cloudflare account, create a NEW D1 database named `code-in-action-millionaire-db`. Do not reuse any database belonging to MCP Jeopardy.
+2. Record the new database UUID. The repository's main-branch Wrangler configuration has no D1 binding; Release 2 needs a D1 binding `DB` pointing to the newly created database.
+3. Apply `schema.sql` to that new D1 database. Do not run migrations against any other database.
+4. Configure `RATE_LIMIT_SECRET` as a Worker secret with a strong random value.
+5. For initial staging, set `REQUIRE_TURNSTILE=false`; before public production release, create separate Turnstile credentials, configure `TURNSTILE_SITE_KEY` and secret `TURNSTILE_SECRET_KEY`, then set `REQUIRE_TURNSTILE=true`.
+6. Run `npm test` and then execute browser, D1, security and concurrent-request integration tests against a staging Worker.
+7. Only after all checks pass, merge into `main` and deploy the new Worker.
+
+**Do not change** MCP Jeopardy's GitHub repository, Worker, database, routes, domain, or secrets.
+
+## Current scope / limitations
+
+- Browser UI now calls server endpoints; server validates answers, winnings, and lifeline usage.
+- Sessions are temporary, authenticated with a random token whose hash is stored in D1.
+- Question pool: **60 course-grounded drafts, four per tier**. This is below the proposed 90-question target; do not describe the bank as fully verified.
+- Official current-doc accuracy review is outstanding.
+- Optional results email is not in this candidate.
+- Cloudflare account configuration and staging tests are outstanding.
+- Production deployment is not authorized until verification gates pass.
