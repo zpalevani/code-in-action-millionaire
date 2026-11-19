@@ -17,3 +17,9 @@ $('again').onclick=()=>{clear();show('welcome')};
 $('delete').onclick=async()=>{if(!confirm('Delete this game permanently?'))return;try{await api(path()+'/delete',{});clear();show('welcome')}catch(e){msg(e.message)}};
 document.querySelectorAll('[data-life]').forEach(b=>b.onclick=()=>life(b.dataset.life));
 (async()=>{try{config=await api('/api/config');if(config.turnstileSiteKey){const script=document.createElement('script');script.src='https://challenges.cloudflare.com/turnstile/v0/api.js';script.async=true;document.head.append(script);const c=document.createElement('div');c.className='cf-turnstile';c.dataset.sitekey=config.turnstileSiteKey;$('captcha').append(c)}if(session)await refresh();else show('welcome')}catch(e){clear();show('welcome');msg(e.message)}})();
+
+// Home navigation preserves the server-side session for later resumption.
+function goHome(){show('welcome');$('resume').hidden=!(session&&state&&state.status==='playing');window.scrollTo({top:0,behavior:'smooth'});}
+$('backHome').onclick=goHome;
+$('resultsHome').onclick=goHome;
+$('resume').onclick=()=>{if(state&&state.status==='playing')render();else if(session)refresh().catch(e=>msg(e.message));};
