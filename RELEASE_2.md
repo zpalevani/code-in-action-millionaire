@@ -18,8 +18,14 @@ This branch is **not production-ready** and is intentionally separate from main.
 
 - Browser UI now calls server endpoints; server validates answers, winnings, and lifeline usage.
 - Sessions are temporary, authenticated with a random token whose hash is stored in D1.
-- Question pool: **60 course-grounded drafts, four per tier**. This is below the proposed 90-question target; do not describe the bank as fully verified.
+- Question pool: **90 course-grounded drafts, six per tier**. The numerical target is met, but the questions are **not independently verified** against current official documentation.
 - Official current-doc accuracy review is outstanding.
 - Optional results email is not in this candidate.
 - Cloudflare account configuration and staging tests are outstanding.
 - Production deployment is not authorized until verification gates pass.
+
+## Current verification status
+
+- Unit-test assertions have been expanded to cover all 90 questions and payout levels. Their execution has **not** been verified.
+- No successful staging D1 integration test, Cloudflare build, production smoke test, or security review has been observed.
+- **Do not interpret a user-reported deployment as proof that Release 2 is functional.** Confirm the exact deployed commit and branch and exercise the API.
