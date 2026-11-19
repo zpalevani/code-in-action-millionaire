@@ -1,0 +1,7 @@
+export const LADDER=[100,200,300,500,1000,2000,4000,8000,16000,32000,64000,125000,250000,500000,1000000];
+export const GUARANTEES=[4,9];
+export function guaranteed(correctCount){return correctCount>=10?32000:correctCount>=5?1000:0}
+export function payout(correctCount,reason){if(reason==='win')return 1000000;if(reason==='walk')return correctCount?LADDER[correctCount-1]:0;return guaranteed(correctCount)}
+export function pickQuestion(bank,level,seed){const group=bank.filter(q=>q.level===level);if(!group.length)throw Error(`Missing questions for level ${level}`);return group[seed%group.length]}
+export function audienceVotes(correctIndex,seed){const correct=52+(seed%30);const rest=100-correct;const weights=[1+((seed>>>3)%7),2+((seed>>>5)%7),3+((seed>>>7)%7)];const total=weights.reduce((a,b)=>a+b,0);const other=[Math.floor(rest*weights[0]/total),Math.floor(rest*weights[1]/total)];other.push(rest-other[0]-other[1]);let j=0;return Array.from({length:4},(_,i)=>i===correctIndex?correct:other[j++])}
+export function shuffle(question,seed){const order=[0,1,2,3];let s=seed>>>0;for(let i=3;i>0;i--){s=(Math.imul(s,1664525)+1013904223)>>>0;const j=s%(i+1);[order[i],order[j]]=[order[j],order[i]]}return {options:order.map(i=>question.options[i]),answer:order.indexOf(question.answer)}}
