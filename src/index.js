@@ -1,0 +1,1 @@
+export default {async fetch(request,env){const url=new URL(request.url);if(url.pathname==='/api/health')return Response.json({ok:true,app:'the-million-dollar-prompt',status:'development'});if(env.ASSETS)return env.ASSETS.fetch(request);return new Response('The Million-Dollar Prompt is in development',{headers:{'content-type':'text/plain; charset=utf-8'}})}};
