@@ -95,5 +95,15 @@ const extraQuestions=[[["Why separate planning from execution?",["To review scop
 for(let level=0;level<levels.length;level++)levels[level].push(...extraQuestions[level]);
 export const QUESTIONS=levels.flatMap((group,level)=>group.map(([prompt,options,answer,explanation],i)=>({id:'CIA-'+String(level*6+i+1).padStart(3,'0'),level,prompt,options,answer,explanation,hint:'Consider the workflow and its purpose before selecting an answer.',source:'Code in Action course — '+['Plan mode','Compaction','Rewind','CLAUDE.md','Worktrees','Skills','Hooks','Verification','Headless automation','Plugins','Testing','Permissions','Integration','Evidence','Production workflow'][level],verification:'COURSE-SOURCED — CURRENT DOCS NOT YET AUDITED'})));
 
-// Omit backend-only questions that are outside the supplied Claude Code course.
-export const COURSE_QUESTIONS = QUESTIONS.filter(q => Number(q.id.slice(4)) <= 82);
+// Replace eight backend-specific draft questions with course-grounded Claude Code material.
+const replacements=[
+['Why does Code in Action recommend a cold second opinion?', ['To catch assumptions the first review missed','To skip running tests','To replace source control','To publish without review'],0,'A separate review can identify blind spots in a change.','Code review'],
+['What should you examine first when reviewing an unattended agent run?', ['The actual diff','The agent\'s confidence','The marketing page','The session title'],0,'Review the code diff before trusting the summary.','Unattended runs'],
+['What does the course recommend for tests in automated coding?', ['Make tests a required gate','Run tests only when asked','Replace tests with screenshots','Trust the completion message'],0,'Executed tests are a release gate, not a verbal promise.','Verification'],
+['What is the purpose of the Claude GitHub Action?', ['Run Claude in GitHub workflows','Replace every Git commit','Host the production database','Guarantee approval'],0,'The GitHub Action integrates Claude into repository workflows.','GitHub Action'],
+['What is a Claude Code plugin marketplace used for?', ['Discovering and installing plugins','Storing model context','Running browser CSS','Replacing project tests'],0,'Marketplaces distribute installable Claude Code plugins.','Plugins'],
+['Before installing a plugin, what does the course advise?', ['Inspect its source and permissions','Grant every requested permission','Copy credentials into its README','Skip provenance checks'],0,'Plugins may execute hooks and other components, so inspect provenance and permissions.','Plugin installation'],
+['What is a plugin manifest for?', ['Describing plugin metadata and components','Encrypting production secrets','Replacing CLAUDE.md','Publishing DNS records'],0,'A plugin manifest describes the plugin package.','Plugin packaging'],
+['Why inspect plugin components beyond the main skill?', ['Hooks and other components can also execute','Only the icon can run code','Plugins never access tools','Manifests are always harmless'],0,'Plugin components can run alongside existing workflows.','Plugin trust']
+];
+export const COURSE_QUESTIONS=QUESTIONS.map((q,i)=>{if(i<82)return q;const [prompt,options,answer,explanation,section]=replacements[i-82];return {...q,prompt,options,answer,explanation,source:'Code in Action course — '+section};});
